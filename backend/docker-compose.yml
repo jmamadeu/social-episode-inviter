@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  episode_inviter-pg:
+    image: bitnami/postgresql
+    container_name:  episode_inviter
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USERNAME=${DB_USER}
+      - POSTGRESQL_PASSWORD=${DB_PASSWORD}
+      - POSTGRESQL_DATABASE=${DB_NAME}
+  episode_inviter-pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - 82:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${DB_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${DB_PASSWORD}
