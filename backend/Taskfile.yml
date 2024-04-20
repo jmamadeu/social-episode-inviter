@@ -56,7 +56,7 @@ tasks:
 
   migrate:up:
     desc: "Run database migrations"
-    cmd: migrate -path ./internal/adapter/storage/postgres/migrations -database {{.DSN}} -verbose up {{.CLI_ARGS}}
+    cmd: migrate -path ./internal/migrations -database {{.DSN}} -verbose up {{.CLI_ARGS}}
     requires:
       vars:
         - DSN
