@@ -1,9 +1,7 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
-	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jmamadeu/episode-inviter.com/internal/service"
@@ -26,20 +24,19 @@ type authenticateRequest struct {
 func (authHandler *Auth) Authenticate(ctx *gin.Context) {
 	var requestBody authenticateRequest
 	if err := ctx.ShouldBindJSON(&requestBody); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		ctx.JSON(http.StatusBadRequest, NewErrorResponse(err.Error()))
 	}
-
-	fmt.Print(requestBody.Email)
-
-	_, err := authHandler.userService.GetUserByEmail(ctx, requestBody.Email)
+	user, err := authHandler.userService.Authenticate(ctx, requestBody.Email)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-		})
-		os.Exit(1)
+		ctx.JSON(http.StatusBadRequest, NewErrorResponse(
+			err.Error(),
+		))
+
+		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"message": "everything ok",
+	ctx.JSON(http.StatusOK, &Response{
+		Payload: user,
+		Message: "Operation completed successfully",
 	})
 }
