@@ -21,12 +21,12 @@ type authenticateRequest struct {
 	Email string `json:"email" binding:"email"`
 }
 
-func (authHandler *Auth) Authenticate(ctx *gin.Context) {
+func (authHandler *Auth) AuthStep1(ctx *gin.Context) {
 	var requestBody authenticateRequest
 	if err := ctx.ShouldBindJSON(&requestBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, NewErrorResponse(err.Error()))
 	}
-	user, err := authHandler.userService.Authenticate(ctx, requestBody.Email)
+	user, err := authHandler.userService.FindOrCreateUser(ctx, requestBody.Email)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, NewErrorResponse(
 			err.Error(),

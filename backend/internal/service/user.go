@@ -40,7 +40,7 @@ func (userService *User) CreateUser(ctx context.Context, email string) (*model.U
 	return &user, nil
 }
 
-func (userService *User) Authenticate(ctx context.Context, email string) (*model.User, error) {
+func (userService *User) FindOrCreateUser(ctx context.Context, email string) (*model.User, error) {
 	user, err := userService.GetUserByEmail(ctx, email)
 	if err != nil {
 		user, err = userService.CreateUser(ctx, email)

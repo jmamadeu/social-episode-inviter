@@ -32,7 +32,7 @@ func main() {
 
 	userService := service.NewUser(db)
 	authHandler := handler.NewAuth(userService)
-	router.POST("/api/v1/authenticate", authHandler.Authenticate)
+	router.POST("/api/v1/auth/steps/1", authHandler.AuthStep1)
 
 	router.Run(":3333")
 }
