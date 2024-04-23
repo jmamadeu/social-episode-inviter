@@ -7,8 +7,13 @@ import (
 	"github.com/joho/godotenv"
 )
 
+type Email struct {
+	SendGridApiKey string
+}
+
 type AppConfig struct {
 	DatabaseUrl string
+	Email       Email
 }
 
 func New() *AppConfig {
@@ -19,5 +24,8 @@ func New() *AppConfig {
 
 	return &AppConfig{
 		DatabaseUrl: os.Getenv("DB_URL"),
+		Email: Email{
+			SendGridApiKey: os.Getenv("SENDGRID_API_KEY"),
+		},
 	}
 }
