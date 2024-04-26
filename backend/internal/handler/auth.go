@@ -8,10 +8,10 @@ import (
 )
 
 type Auth struct {
-	userService *service.User
+	authService *service.Auth
 }
 
-func NewAuth(us *service.User) *Auth {
+func NewAuth(us *service.Auth) *Auth {
 	return &Auth{
 		us,
 	}
@@ -21,12 +21,12 @@ type authenticateRequest struct {
 	Email string `json:"email" binding:"email"`
 }
 
-func (authHandler *Auth) AuthStep1(ctx *gin.Context) {
+func (authHandler *Auth) Login(ctx *gin.Context) {
 	var requestBody authenticateRequest
 	if err := ctx.ShouldBindJSON(&requestBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, NewErrorResponse(err.Error()))
 	}
-	user, err := authHandler.userService.FindOrCreateUser(ctx, requestBody.Email)
+	user, err := authHandler.authService.Token(ctx, requestBody.Email)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, NewErrorResponse(
 			err.Error(),

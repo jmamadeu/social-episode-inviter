@@ -31,8 +31,10 @@ func main() {
 	router := gin.Default()
 
 	userService := service.NewUser(db)
-	authHandler := handler.NewAuth(userService)
-	router.POST("/api/v1/auth/steps/1", authHandler.AuthStep1)
+
+	authService := service.NewAuth(userService)
+	authHandler := handler.NewAuth(authService)
+	router.POST("/api/v1/login", authHandler.Login)
 
 	router.Run(":3333")
 }

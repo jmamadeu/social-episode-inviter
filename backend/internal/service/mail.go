@@ -1,6 +1,8 @@
 package service
 
 import (
+	"fmt"
+
 	"github.com/jmamadeu/episode-inviter.com/internal/config"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
@@ -29,10 +31,12 @@ func (emailService *Email) SendEmail() error {
 
 	message := mail.NewSingleEmail(&emailService.from, emailService.subject, &emailService.to, emailService.message, "")
 	client := sendgrid.NewSendClient(appConfig.Email.SendGridApiKey)
-	_, err := client.Send(message)
+	response, err := client.Send(message)
 	if err != nil {
 		return err
 	}
+
+	fmt.Println(response.StatusCode)
 
 	return nil
 }

@@ -1,7 +1,12 @@
 package util
 
-import "math/rand"
+import (
+	"math"
+	"math/rand/v2"
+)
 
 func GenerateDigits() int {
-	return 10000 + rand.Intn(10000-9999)
+	value := int(math.Floor(rand.Float64() * ((9999 - 1000) + 1000)))
+
+	return value
 }
