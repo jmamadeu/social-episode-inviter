@@ -6,17 +6,19 @@ import (
 	"github.com/google/uuid"
 )
 
+const EMAIL_TOKEN_EXPIRATION_MINUTES = 60 * 10
+
 type TokenType string
 
 const (
-	Email TokenType = "email"
-	Api   TokenType = "api"
+	TokenTypeEmail TokenType = "email"
+	TokenTypeApi   TokenType = "api"
 )
 
 type Token struct {
 	Id         uuid.UUID
-	Created_at time.Time
-	Updated_at time.Time
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 	Type       TokenType
 	EmailToken string
 	Valid      bool
