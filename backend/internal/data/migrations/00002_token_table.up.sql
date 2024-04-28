@@ -7,7 +7,7 @@ CREATE TABLE "tokens" (
     "type" token_type_enum,
     "email_token" VARCHAR,
     "valid" BOOLEAN,
-    "expiration" TIMESTAMPTZ,
+    "expiration" TIMESTAMPS,
     "user_id" VARCHAR NOT NULL,
 
     FOREIGN KEY (user_id) REFERENCES users(id)

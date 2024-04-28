@@ -31,8 +31,9 @@ func main() {
 	router := gin.Default()
 
 	userService := service.NewUser(db)
+	tokenService := service.NewTokenService(db, userService)
 
-	authService := service.NewAuth(userService)
+	authService := service.NewAuth(userService, tokenService)
 	authHandler := handler.NewAuth(authService)
 	router.POST("/api/v1/login", authHandler.Login)
 

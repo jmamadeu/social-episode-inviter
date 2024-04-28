@@ -10,12 +10,14 @@ import (
 )
 
 type Auth struct {
-	userService *User
+	userService  *User
+	tokenService *Token
 }
 
-func NewAuth(userService *User) *Auth {
+func NewAuth(userService *User, tokenService *Token) *Auth {
 	return &Auth{
 		userService,
+		tokenService,
 	}
 }
 
@@ -33,9 +35,18 @@ func (authService *Auth) Token(ctx context.Context, email string) (*model.User, 
 		Name:    "João Amadeu",
 		Address: "joao.amadeu.coding@gmail.com",
 	}, mail.Email{
-		Name:    "Episode Inviter",
+		Name:    "Reitvin",
 		Address: "joao.amadeu.coding@gmail.com",
-	}, tokenMessage, "Retivini Authentication code")
+	}, tokenMessage, "Authentication code")
+
+	_, err = authService.tokenService.CreateToken(ctx,
+		model.TokenTypeEmail,
+		emailToken,
+		user.Id,
+	)
+	if err != nil {
+		return nil, err
+	}
 
 	err = tokenEmail.SendEmail()
 	if err != nil {
