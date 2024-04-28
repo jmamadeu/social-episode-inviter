@@ -51,3 +51,14 @@ func (userService *User) FindOrCreateUser(ctx context.Context, email string) (*m
 
 	return user, nil
 }
+
+func (userService *User) GetUserById(ctx context.Context, userId uuid.UUID) (*model.User, error) {
+	query := `SELECT * FROM users WHERE id = $1`
+	var user model.User
+	err := userService.db.QueryRow(ctx, query, userId).Scan(&user.Id, &user.Email)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
