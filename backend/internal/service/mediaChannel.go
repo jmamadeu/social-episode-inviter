@@ -20,39 +20,39 @@ func NewMediaChannelService(db *data.Database, userService *User) *MediaChannel 
 	}
 }
 
-func (mediaChannelService *MediaChannel) CreateMediaChannel(ctx context.Context, name, url, bannerUrl string, platform model.MediaChannelPlatform, userId uuid.UUID) (*model.MediaChannel, error) {
+func (mediaChannelService *MediaChannel) CreateMediaChannel(ctx context.Context, name, bannerUrl, description, username string, ownerId uuid.UUID) (*model.MediaChannel, error) {
 	query := `INSERT INTO media_channels
-		(id,name,platform,url,banner_url,user_id)
+		(id,name,banner_url,description,username,owner_id)
 		VALUES (
 			$1,$2,$3,$4,$5,$6
 		)
 	`
 	mediaChannel := &model.MediaChannel{
-		Id:        uuid.New(),
-		Name:      name,
-		Platform:  platform,
-		Url:       url,
-		BannerUrl: bannerUrl,
-		UserId:    userId,
+		Id:          uuid.New(),
+		Name:        name,
+		BannerUrl:   bannerUrl,
+		Description: description,
+		Username:    username,
+		OwnerId:     ownerId,
 	}
 
 	_, err := mediaChannelService.db.Exec(ctx, query,
 		mediaChannel.Id,
 		mediaChannel.Name,
-		mediaChannel.Platform,
-		mediaChannel.Url,
 		mediaChannel.BannerUrl,
-		mediaChannel.UserId,
+		mediaChannel.Description,
+		mediaChannel.Username,
+		mediaChannel.OwnerId,
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	user, err := mediaChannelService.userService.GetUserById(ctx, userId)
+	user, err := mediaChannelService.userService.GetUserById(ctx, ownerId)
 	if err != nil {
 		return nil, err
 	}
-	mediaChannel.User = user
+	mediaChannel.Owner = user
 
 	return mediaChannel, nil
 }

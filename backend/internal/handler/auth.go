@@ -25,6 +25,7 @@ func (authHandler *Auth) Login(ctx *gin.Context) {
 	var requestBody authenticateRequest
 	if err := ctx.ShouldBindJSON(&requestBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, NewErrorResponse(err.Error()))
+		return
 	}
 	user, err := authHandler.authService.Token(ctx, requestBody.Email)
 	if err != nil {

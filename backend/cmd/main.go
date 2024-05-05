@@ -33,9 +33,18 @@ func main() {
 	userService := service.NewUser(db)
 	tokenService := service.NewTokenService(db, userService)
 
+	mediaChannelService := service.NewMediaChannelService(db, userService)
+	mediaChannelHandler := handler.NewMediaChannelHandler(mediaChannelService)
+
 	authService := service.NewAuth(userService, tokenService)
 	authHandler := handler.NewAuth(authService)
-	router.POST("/api/v1/login", authHandler.Login)
+
+	v1Router := router.Group("/api/v1")
+	{
+		v1Router.POST("/login", authHandler.Login)
+		v1Router.POST("/media-channel", mediaChannelHandler.CreateNewMediaChannel)
+
+	}
 
 	router.Run(":3333")
 }

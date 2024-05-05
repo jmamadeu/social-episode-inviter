@@ -1,17 +1,24 @@
 package model
 
-import "github.com/google/uuid"
+import (
+	"errors"
+
+	"github.com/google/uuid"
+)
 
 type MediaChannelPlatform string
 
-var MediaChannelPlatformYoutube MediaChannelPlatform = "youtube"
-
 type MediaChannel struct {
-	Id        uuid.UUID
-	Name      string
-	Platform  MediaChannelPlatform
-	Url       string
-	BannerUrl string
-	UserId    uuid.UUID
-	User      *User
+	Id          uuid.UUID `json:"id"`
+	Name        string    `json:"name"`
+	BannerUrl   string    `json:"bannerUrl"`
+	Description string    `json:"description"`
+	Username    string    `json:"username"`
+	OwnerId     uuid.UUID `json:"ownerId"`
+	Owner       *User     `json:"owner"`
 }
+
+var (
+	ErrMediaChannelUsernameTaken = errors.New("media channel username is already taken")
+	ErrMediaChannelNotFound      = errors.New("media channel not found")
+)
