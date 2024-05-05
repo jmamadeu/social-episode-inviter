@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/google/uuid"
 	"github.com/jmamadeu/episode-inviter.com/internal/data"
@@ -36,6 +37,11 @@ func (mediaChannelService *MediaChannel) CreateMediaChannel(ctx context.Context,
 		OwnerId:     ownerId,
 	}
 
+	usernameTaken := mediaChannelService.CheckMediaChannelExistsByUsername(ctx, username)
+	if usernameTaken {
+		return nil, model.ErrMediaChannelUsernameTaken
+	}
+
 	_, err := mediaChannelService.db.Exec(ctx, query,
 		mediaChannel.Id,
 		mediaChannel.Name,
@@ -55,4 +61,17 @@ func (mediaChannelService *MediaChannel) CreateMediaChannel(ctx context.Context,
 	mediaChannel.Owner = user
 
 	return mediaChannel, nil
+}
+
+func (mcs *MediaChannel) CheckMediaChannelExistsByUsername(ctx context.Context, username string) bool {
+	query := `SELECT COUNT(*) FROM media_channels WHERE username = $1`
+	var mediaChannelCount string
+	mcs.db.QueryRow(ctx, query, username).Scan(&mediaChannelCount)
+
+	count, err := strconv.Atoi(mediaChannelCount)
+	if err != nil {
+		return false
+	}
+
+	return count > 0
 }
