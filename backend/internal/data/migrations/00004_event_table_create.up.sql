@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS "events"(
     "name" VARCHAR NOT NULL,
     "location" VARCHAR,
     "description" VARCHAR,
-    "audience" VARCHAR,
     "media_channel_id" VARCHAR NOT NULL,
+    "date" TIMESTAMPTZ,
     FOREIGN KEY ("media_channel_id") REFERENCES "media_channels"("id") ON DELETE NO ACTION
 );

@@ -36,6 +36,9 @@ func main() {
 	mediaChannelService := service.NewMediaChannelService(db, userService)
 	mediaChannelHandler := handler.NewMediaChannelHandler(mediaChannelService)
 
+	eventService := service.NewEventService(db, mediaChannelService)
+	eventHandler := handler.NewEventHandler(eventService)
+
 	authService := service.NewAuth(userService, tokenService)
 	authHandler := handler.NewAuth(authService)
 
@@ -44,6 +47,7 @@ func main() {
 		v1Router.POST("/login", authHandler.Login)
 		v1Router.POST("/media-channels", mediaChannelHandler.CreateNewMediaChannel)
 		v1Router.GET("/media-channels", mediaChannelHandler.FetchMediaChannels)
+		v1Router.POST("/events", eventHandler.CreateEvent)
 	}
 
 	router.Run(":3333")
