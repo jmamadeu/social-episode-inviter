@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/jmamadeu/episode-inviter.com/internal/data"
 	"github.com/jmamadeu/episode-inviter.com/internal/model"
 )
@@ -74,4 +75,42 @@ func (mcs *MediaChannel) CheckMediaChannelExistsByUsername(ctx context.Context, 
 	}
 
 	return count > 0
+}
+
+func (mcs *MediaChannel) GetMediaChannelById(ctx context.Context, id uuid.UUID) (*model.MediaChannel, error) {
+	query := `SELECT * FROM media_channel WHERE id = $1`
+	var mediaChannel model.MediaChannel
+
+	mcs.db.QueryRow(ctx, query, mediaChannel, id).Scan(
+		&mediaChannel.Id,
+		&mediaChannel.Name,
+		&mediaChannel.Description,
+		&mediaChannel.BannerUrl,
+		&mediaChannel.OwnerId,
+		&mediaChannel.Username,
+	)
+
+	return &mediaChannel, nil
+}
+
+func (mcs *MediaChannel) FetchMediaChannels(ctx context.Context) ([]model.MediaChannel, error) {
+	query := `SELECT * FROM media_channels`
+	var mediaChannels []model.MediaChannel
+
+	var mediaChannel model.MediaChannel
+
+	rows, _ := mcs.db.Query(ctx, query)
+	pgx.ForEachRow(rows, []any{
+		&mediaChannel.Id,
+		&mediaChannel.Name,
+		&mediaChannel.Description,
+		&mediaChannel.BannerUrl,
+		&mediaChannel.OwnerId,
+		&mediaChannel.Username,
+	}, func() error {
+		mediaChannels = append(mediaChannels, mediaChannel)
+		return nil
+	})
+
+	return mediaChannels, nil
 }

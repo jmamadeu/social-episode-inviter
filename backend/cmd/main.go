@@ -42,8 +42,8 @@ func main() {
 	v1Router := router.Group("/api/v1")
 	{
 		v1Router.POST("/login", authHandler.Login)
-		v1Router.POST("/media-channel", mediaChannelHandler.CreateNewMediaChannel)
-
+		v1Router.POST("/media-channels", mediaChannelHandler.CreateNewMediaChannel)
+		v1Router.GET("/media-channels", mediaChannelHandler.FetchMediaChannels)
 	}
 
 	router.Run(":3333")

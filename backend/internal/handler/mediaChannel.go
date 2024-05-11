@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/jmamadeu/episode-inviter.com/internal/model"
 	"github.com/jmamadeu/episode-inviter.com/internal/service"
 )
 
@@ -40,4 +41,38 @@ func (mcs *MediaChannel) CreateNewMediaChannel(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, NewResponse(mediaChannel))
+}
+
+type mediaChannelResponse struct {
+	Id          uuid.UUID `json:"id"`
+	Name        string    `json:"name"`
+	BannerUrl   string    `json:"bannerUrl"`
+	Description string    `json:"description"`
+	Username    string    `json:"username"`
+	OwnerId     uuid.UUID `json:"ownerId"`
+}
+
+func newMediaChannelResponse(data []model.MediaChannel) (mediaChannels []mediaChannelResponse) {
+	for m := range data {
+		mediaChannels = append(mediaChannels, mediaChannelResponse{
+			data[m].Id,
+			data[m].Name,
+			data[m].BannerUrl,
+			data[m].Description,
+			data[m].Username,
+			data[m].OwnerId,
+		})
+	}
+
+	return mediaChannels
+}
+
+func (mcs *MediaChannel) FetchMediaChannels(ctx *gin.Context) {
+	mediaChannels, err := mcs.mediaChannelService.FetchMediaChannels(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, NewErrorResponse(err.Error()))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, NewResponse(newMediaChannelResponse(mediaChannels)))
 }
