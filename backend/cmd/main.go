@@ -48,6 +48,7 @@ func main() {
 		v1Router.POST("/media-channels", mediaChannelHandler.CreateNewMediaChannel)
 		v1Router.GET("/media-channels", mediaChannelHandler.FetchMediaChannels)
 		v1Router.POST("/events", eventHandler.CreateEvent)
+		v1Router.GET("/events", eventHandler.FetchEvents)
 	}
 
 	router.Run(":3333")

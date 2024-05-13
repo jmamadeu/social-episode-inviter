@@ -42,3 +42,13 @@ func (es *Event) CreateEvent(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, NewResponse(event))
 }
+
+func (es *Event) FetchEvents(ctx *gin.Context) {
+	events, err := es.eventService.FetchEvents(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, NewErrorResponse(err.Error()))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, NewResponse(events))
+}

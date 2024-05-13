@@ -2,9 +2,11 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/jmamadeu/episode-inviter.com/internal/data"
 	"github.com/jmamadeu/episode-inviter.com/internal/model"
 )
@@ -47,4 +49,27 @@ func (es *Event) CreateNewEvent(ctx context.Context, name, location, description
 	}
 
 	return event, nil
+}
+
+func (es *Event) FetchEvents(ctx context.Context) ([]model.Event, error) {
+	query := `SELECT * FROM events`
+	var events []model.Event
+	var event model.Event
+
+	rows, _ := es.db.Query(ctx, query)
+	pgx.ForEachRow(rows, []any{
+		&event.Id,
+		&event.Name,
+		&event.Location,
+		&event.Description,
+		&event.MediaChannelId,
+		&event.Date,
+	}, func() error {
+		events = append(events, event)
+		return nil
+	})
+
+	fmt.Print(events)
+
+	return events, nil
 }
